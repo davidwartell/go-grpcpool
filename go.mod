@@ -3,7 +3,6 @@ module github.com/davidwartell/go-grpcpool
 go 1.21.5
 
 require (
-	github.com/davidwartell/go-commons-drw v0.0.0-20221210010535-137c36e4812e
 	github.com/davidwartell/go-logger-facade v0.0.0-20240108225651-763d3bc76587
 	github.com/golang/snappy v0.0.4
 	github.com/pkg/errors v0.9.1
