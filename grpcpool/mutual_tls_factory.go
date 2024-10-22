@@ -122,14 +122,14 @@ func LoadTLSCredentials(caCertPEM []byte, clientCertPEM []byte, clientKeyPEM []b
 		return nil, err
 	}
 
-	clientOptions := &advancedtls.ClientOptions{
+	clientOptions := &advancedtls.Options{
 		IdentityOptions: advancedtls.IdentityCertificateOptions{
 			Certificates: []tls.Certificate{clientCert},
 		},
 		RootOptions: advancedtls.RootCertificateOptions{
-			RootCACerts: certPool,
+			RootCertificates: certPool,
 		},
-		VType: advancedtls.CertVerification,
+		VerificationType: advancedtls.CertVerification,
 	}
 
 	return advancedtls.NewClientCreds(clientOptions)
