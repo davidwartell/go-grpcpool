@@ -116,12 +116,16 @@ func (p *Pool) Get(ctx context.Context) (grpcpool.PoolClientConn, error) {
 	if p.conn == nil {
 		var err error
 		p.conn, err = p.factory.NewConnection(ctx)
-		if ctx.Err() != nil {
-			p.conn = nil
-			return nil, ctx.Err()
-		} else if err != nil {
-			p.conn = nil
-			return nil, err
+		if err != nil {
+			if p.conn != nil {
+				_ = p.conn.Close()
+				p.conn = nil
+			}
+			if ctx.Err() != nil {
+				return nil, ctx.Err()
+			} else if err != nil {
+				return nil, err
+			}
 		}
 		logger.Instance().Trace("Opened New Connection from Factory")
 	} else {
