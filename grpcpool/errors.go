@@ -4,6 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"io"
 	"strings"
 )
 
@@ -20,9 +21,14 @@ func DecodeGrpcError(err error) (connectionFailure bool, returnErr error) {
 			rpcErr := errors.Errorf("error on grpc request %s (%d)", st.Message(), st.Code())
 			return false, rpcErr
 		}
+	} else if errors.Is(err, io.EOF) {
+		// stream returns EOF when gracefully shutting down
+		return true, err
 	} else if strings.Contains(err.Error(), "use of closed network connection") {
 		return true, err
 	} else if strings.Contains(err.Error(), "Error while dialing") {
+		return true, err
+	} else if strings.Contains(err.Error(), "context canceled") {
 		return true, err
 	} else {
 		// general GRPC error
